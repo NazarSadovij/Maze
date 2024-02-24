@@ -7,16 +7,43 @@ class GameSprite():
         self.speed = speed
         self.rect.x = x
         self.rect.y = y
-
-        self.move_left = False
+        self.direction = "right"
 
     def reset(self):
-
-        if self.move_left == True:
-            self.rect.x += self.speed
-
         window.blit(self.img,  (self.rect.x, self.rect.y))
 
+
+class Hero (GameSprite):
+    def move(self):
+        keys = key.get_pressed()
+
+        if keys[K_d]:
+            if self.rect.x < 640:
+                self.rect.x += self.speed
+
+        if keys[K_a]:
+            if self.rect.x > 10:
+                self.rect.x -= self.speed
+
+        if keys[K_w]:
+            if self.rect.y > 10:
+                self.rect.y -= self.speed
+
+        if keys [K_s]:
+            if self.rect.y < 440:
+                self.rect.y += self.speed
+
+
+class Enemy(GameSprite):
+    def move(self, start, end):
+        if self.direction == "right":
+            self.rect.x += 5
+        if self.direction == "left":
+            self.rect.x -= 5
+        if self.rect.x == end:
+            self.direction = "left"
+        if self.rect.x == start:
+            self.direction = "right"
 
 clock = time.Clock()
 FPS = 60
@@ -31,7 +58,7 @@ mixer.music.play()
 
 kick = mixer.Sound("kick.ogg")
 
-hero = GameSprite('sprite1.png', 50, 50, 10 )
+hero = Hero('sprite1.png', 50, 50, 10 )
 
 sprite2 = transform.scale(
     image.load("sprite2.png"),(100, 100))
@@ -43,21 +70,14 @@ while game:
     window.blit(background, (0, 0))
     window.blit(sprite2, (200, 200))
     hero.reset()
+    hero.move()
+    enemy.move(300, 600)
     keys_preesed = key.get_pressed()
 
     for e in event.get():
         if e.type == QUIT:
             game = False
-        if e.type == KEYDOWN:
-            if e.key == K_d:
-                kick.play()
-            if e.key == K_d:
-                hero.move_left = True
-
-        if e.type == KEYUP:
-            if e.key == K_d:
-                hero.move_left = False
-
+      
 
     display.update()
     clock.tick(FPS)

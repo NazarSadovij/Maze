@@ -45,6 +45,18 @@ class Enemy(GameSprite):
         if self.rect.x == start:
             self.direction = "right"
 
+
+class Wall():
+    def __init__(self, x, y, width, height):
+        self.img = Surface((width, height))
+        self.img.fill((255, 0, 255))
+        self.rect = self.img.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def draw(self):
+        window.blit(self.img, (self.rect.x, self.rect.y))
+
 clock = time.Clock()
 FPS = 60
 
@@ -60,18 +72,32 @@ kick = mixer.Sound("kick.ogg")
 
 hero = Hero('sprite1.png', 50, 50, 10 )
 
-sprite2 = transform.scale(
-    image.load("sprite2.png"),(100, 100))
+enemy = Enemy("sprite2.png", 10, 50, 50)
+   
 
+
+walls = [
+        Wall(20, 40, 100, 10),
+        Wall(120, 40, 10, 200),
+        Wall(120, 240, 200, 10),
+        Wall(320, 200, 10, 50),
+
+        ]
+
+map
 game = True
 
 
 while game:
     window.blit(background, (0, 0))
-    window.blit(sprite2, (200, 200))
+    enemy.reset()
     hero.reset()
     hero.move()
-    enemy.move(300, 600)
+    enemy.move(0, 600)
+
+    for wall in walls:
+        wall.draw()
+
     keys_preesed = key.get_pressed()
 
     for e in event.get():
